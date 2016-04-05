@@ -1,0 +1,7 @@
+rsa using cryptopp benchmark [average of 100 encryptions]
+Key Length	Sign Time(us)	Verify Time(us)
+1024	740	57
+2048	2758	124
+3072	15803	303
+7680	79901	614
+15360	467474	1461

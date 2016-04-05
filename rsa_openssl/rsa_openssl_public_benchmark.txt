@@ -1,0 +1,7 @@
+rsa (public key encryption) using openssl benchmark [average of 100 encryptions]
+Key Length	Encryption Time(us)	Decryption Time(us)
+1024	124	736
+2048	292	3586
+3072	526	11026
+7680	1234	77829
+15360	3704	561199

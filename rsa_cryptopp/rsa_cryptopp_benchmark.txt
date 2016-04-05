@@ -1,0 +1,7 @@
+rsa using cryptopp benchmark [average of 100 encryptions]
+Key Length	Encryption Time(us)	Decryption Time(us)
+1024	114	507
+2048	257	2728
+3072	516	14945
+7680	906	79816
+15360	1817	465710

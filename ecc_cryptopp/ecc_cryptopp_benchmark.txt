@@ -1,0 +1,7 @@
+ecc using cryptopp benchmark [average of 100 encryptions]
+Curve	Encryption Time(us)	Decryption Time(us)
+secp160r1	1122	800
+secp224r1	2566	1790
+secp256r1	4507	3127
+secp384r1	8640	5908
+secp521r1	19476	12796

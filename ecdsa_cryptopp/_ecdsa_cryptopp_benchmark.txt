@@ -1,0 +1,7 @@
+ecdsa using cryptopp benchmark [average of 100 encryptions]
+Curve	Sign Time(us)	Verify Time(us)
+secp160r1	667	1431
+secp224r1	1689	4317
+secp256r1	2769	7737
+secp384r1	5006	14805
+secp521r1	11441	35136

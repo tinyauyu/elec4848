@@ -1,7 +1,7 @@
 all: ecc_cryptopp rsa_cryptopp rsa_openssl
 
 ecc_cryptopp:
-	g++ -DDEBUG=1 -g3 -O0 -Wall -Wextra ./ecc_crypopp/ecc.cpp -o ecc.o -lcryptopp
+	cd ecc_cryptopp && $(MAKE) all
 
 rsa_cryptopp:
 	cd rsa_cryptopp && $(MAKE) all
