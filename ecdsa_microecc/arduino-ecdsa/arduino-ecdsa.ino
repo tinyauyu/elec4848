@@ -37,6 +37,9 @@ static int RNG(uint8_t *dest, unsigned size) {
 
 void vli_print(uint8_t *vli, unsigned int size) {
     for(unsigned i=0; i<size; ++i) {
+        if((unsigned)vli[i]<16){
+          Serial.print(0,HEX);
+        }
         Serial.print((unsigned)vli[i],HEX);
     }
     Serial.println();
@@ -73,7 +76,7 @@ void setup() {
 }
 
 void loop() {
-  int c = 2;   // using secp256r1
+  int c = 3;   // using secp256r1
   int pubkey_size = uECC_curve_public_key_size(curves[c]);
   int prikey_size = uECC_curve_private_key_size(curves[c]);
   Serial.print("pub key size = ");
@@ -91,16 +94,18 @@ void loop() {
   }
   
   Serial.print("public key: ");
-  int pub_en_len = (int) base64_enc_len(pubkey_size);
-  char pub_en[pub_en_len];
-  base64_encode(pub_en, (char*) publickey, pub_en_len);
-  Serial.println(pub_en);
+  //int pub_en_len = (int) base64_enc_len(pubkey_size);
+  //char pub_en[pub_en_len];
+  //base64_encode(pub_en, (char*) publickey, pub_en_len);
+  //Serial.println(pub_en);
+  vli_print(publickey, pubkey_size);
   
   Serial.print("private key: ");
-  int pri_en_len = (int) base64_enc_len(prikey_size);
-  char pri_en[pri_en_len];
-  base64_encode(pri_en, (char*) privatekey, pri_en_len);
-  Serial.println(pri_en);
+  //int pri_en_len = (int) base64_enc_len(prikey_size);
+  //char pri_en[pri_en_len];
+  //base64_encode(pri_en, (char*) privatekey, pri_en_len);
+  //Serial.println(pri_en);
+  vli_print(privatekey, prikey_size);
 
   Serial.println("Signing message...");
   if (!uECC_sign(privatekey,(uint8_t*) hash, sizeof(hash), sig, curves[c])) {
@@ -108,10 +113,11 @@ void loop() {
       return;
   }
   Serial.print("sign: ");
-  int sig_en_len = (int) base64_enc_len(sizeof(sig));
-  char sig_en[sig_en_len];
-  base64_encode(sig_en, (char*) sig, sig_en_len);
-  Serial.println(sig_en);
+  //int sig_en_len = (int) base64_enc_len(sizeof(sig));
+  //char sig_en[sig_en_len];
+  //base64_encode(sig_en, (char*) sig, sig_en_len);
+  //Serial.println(sig_en);
+  vli_print(sig, sizeof(sig));
 
   if (!uECC_verify(publickey, (uint8_t*) hash, sizeof(hash), sig, curves[c])) {
       Serial.println("uECC_verify() failed");
