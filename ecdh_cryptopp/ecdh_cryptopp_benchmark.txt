@@ -1,0 +1,7 @@
+ecdh using cryptopp benchmark [average of 100 encryptions]
+Curve	Time for Secret Generation(us)
+secp160r1	672
+secp224r1	1552
+secp256r1	2596
+secp384r1	4882
+secp521r1	11815
