@@ -5,6 +5,7 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+#include <iomanip> // This might be necessary
 
 #include <string>
 using std::string;
@@ -24,6 +25,7 @@ using CryptoPP::ECDSA;
 
 #include "cryptopp/sha.h"
 using CryptoPP::SHA1;
+using CryptoPP::SHA256;
 
 #include "cryptopp/queue.h"
 using CryptoPP::ByteQueue;
@@ -100,19 +102,19 @@ int main( int argc, char** arg ) {
     //////////////////////////////////////////////////////
 
     // Generate private key
-    ECDSA<ECP, SHA1>::PrivateKey privKey;
+    ECDSA<ECP, SHA256>::PrivateKey privKey;
     privKey.Initialize( prng, curve(curve_name) );
     privKey.Save( privateKey );
 
     // Create public key
-    ECDSA<ECP, SHA1>::PublicKey pubKey;
+    ECDSA<ECP, SHA256>::PublicKey pubKey;
     privKey.MakePublicKey( pubKey );
     pubKey.Save( publicKey );
 
     //////////////////////////////////////////////////////    
 
     // Load private key (in ByteQueue, PKCS#8 format)
-    ECDSA<ECP, SHA1>::Signer signer( privateKey );
+    ECDSA<ECP, SHA256>::Signer signer( privateKey );
 
     // Determine maximum size, allocate a string with that size
     size_t siglen = signer.MaxSignatureLength();
@@ -129,14 +131,16 @@ int main( int argc, char** arg ) {
     //////////////////////////////////////////////////////    
 
     // Load public key (in ByteQueue, X509 format)
-    ECDSA<ECP, SHA1>::Verifier verifier( publicKey );
+    cout << "Length: " << publicKey.MaxRetrievable() << endl;
+    ECDSA<ECP, SHA256>::Verifier verifier( publicKey );
     gettimeofday(&start, NULL);
     bool result = verifier.VerifyMessage( (const byte*)message.data(), message.size(), (const byte*)signature.data(), signature.size() );
     gettimeofday(&stop, NULL);
 
-    if(result)
+    if(result){
         cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << endl;
-    else
+        //cout << "signature: " << std::hex << signature << endl;
+    }else
         cerr << "Failed to verify signature on message" << endl;
 
     return 0;
