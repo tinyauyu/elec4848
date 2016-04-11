@@ -105,7 +105,6 @@ int main( int argc, char** arg) {
     SecByteBlock privB(dhB.PrivateKeyLength()), pubB(dhB.PublicKeyLength());
 
     dhA.GenerateKeyPair(rng, privA, pubA);
-
     dhB.GenerateKeyPair(rng, privB, pubB);
 
     if(dhA.AgreedValueLength() != dhB.AgreedValueLength())

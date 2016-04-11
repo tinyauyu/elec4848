@@ -8,7 +8,7 @@ using CryptoPP::RSAES_OAEP_SHA_Encryptor;
 using CryptoPP::RSAES_OAEP_SHA_Decryptor;
 
 #include <cryptopp/sha.h>
-using CryptoPP::SHA1;
+using CryptoPP::SHA256;
 
 #include <cryptopp/filters.h>
 using CryptoPP::StringSink;
@@ -144,13 +144,13 @@ int main(int argc, char* argv[])
         string plain=message, cipher, recovered;
 
         // Signer object
-        RSASS<PSS, SHA1>::Signer signer(privateKey);
-
-        gettimeofday(&start, NULL);
+        RSASS<PSS, SHA256>::Signer signer(privateKey);
 
         // Create signature space
         size_t length = signer.MaxSignatureLength();
         SecByteBlock signature(length);
+
+        gettimeofday(&start, NULL);
 
         // Sign message
         length = signer.SignMessage(rng, (const byte*) message.c_str(),
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
         cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << " ";
 
         // Verifier object
-        RSASS<PSS, SHA1>::Verifier verifier(publicKey);
+        RSASS<PSS, SHA256>::Verifier verifier(publicKey);
 
         gettimeofday(&start, NULL);
 

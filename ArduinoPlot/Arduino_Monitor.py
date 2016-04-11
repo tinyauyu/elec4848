@@ -59,7 +59,11 @@ class SerialData(object):
             self.ser.close()
 
 if __name__=='__main__':
+    f = open('idle.txt','w')
     s = SerialData()
-    for i in range(500):
-        time.sleep(.015)
-        print s.next()
+    for i in range(600):
+        time.sleep(.1)
+        print i
+        f.write(str(s.next())) # python will convert \n to os.linesep
+        f.write('\n')
+    f.close() # you can omit in most cases as the destructor will call it

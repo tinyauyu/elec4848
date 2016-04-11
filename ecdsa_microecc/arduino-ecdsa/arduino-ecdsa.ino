@@ -71,23 +71,42 @@ void init_curve(){
   #endif
 }
 /************************/
-
+int iteration, c;
+long totalSign, totalVerify;
 void setup() {
   Serial.begin(9600);
   Serial.println("Testing ecdsa");
   //uECC_set_rng(&RNG);
   uECC_set_rng(&RNG);
   init_curve();
+
+//  iteration = 0;
+  c = 3;
 }
 
 void loop() {
-  int c = 3;   // using secp256r1
-  int pubkey_size = uECC_curve_public_key_size(curves[c]);
-  int prikey_size = uECC_curve_private_key_size(curves[c]);
-  Serial.print("pub key size = ");
-  Serial.println(pubkey_size);
-//  uint8_t privatekey[32] = {0};
-//  uint8_t publickey[64] = {0};
+//  Serial.print(iteration);
+//  Serial.print("->");
+  //Serial.print(totalTime);
+  //Serial.print("->");
+//  if(iteration > 100){
+//    c++;
+//    if(c>4){return;}
+//    iteration = 0;
+//    Serial.print("done curve ");
+//    Serial.println(c);
+//    Serial.print("totalSign = ");
+//    Serial.println(totalSign);
+//    Serial.print("totalVerify = ");
+//    Serial.println(totalVerify);
+//    
+//  }
+  const int pubkey_size = uECC_curve_public_key_size(curves[c]);
+  const int prikey_size = uECC_curve_private_key_size(curves[c]);
+  //Serial.print("pub key size = ");
+  //Serial.println(pubkey_size);
+  uint8_t privatekey[prikey_size];
+  uint8_t publickey[pubkey_size];
   
   char message[] = "This is an apple!";
   int message_len = 17;
@@ -100,50 +119,67 @@ void loop() {
   
   uint8_t sig[64] = {0};
 
-  Serial.print("Message: ");
-  vli_print((uint8_t*)hash, hash_len);
+ // Serial.print("Message: ");
+  //vli_print((uint8_t*)hash, hash_len);
   
 
-  Serial.println("Generate keys...");
-  uint8_t publickey[] = {0x3E,0x5D,0xAC,0x6B,0x35,0x2D,0x67,0xC0,0x9F,0x8C,0x11,0x1B,0x57,0xA6,0x5A,0xC3,0xFF,0xAD,0x08,0xB9,0x0B,0x89,0x71,0x1B,0x72,0xA4,0xA0,0xEF,0x8E,0x84,0xF4,0x7D,0xEF,0xD9,0xCD,0x12,0xA3,0xF9,0x11,0x89,0xEC,0xDF,0xFE,0x6A,0x88,0x08,0xB6,0xB4,0x2C,0x3C,0x36,0xF2,0x24,0x89,0x8E,0xB7,0xB4,0x29,0xD4,0xFB,0x1D,0x1F,0x1F,0xB7};
-  uint8_t privatekey[] = {0xE1,0x2F,0xB7,0x75,0x65,0xA6,0xC2,0x09,0xB1,0xD9,0xF6,0xC3,0xF6,0x54,0x6C,0xF5,0xAE,0xFE,0x06,0x66,0xD3,0x35,0x75,0x04,0xA7,0xB9,0x8F,0x78,0xBD,0xE3,0xB7,0xEC};
-  /*
+  //Serial.println("Generate keys...");
+  //uint8_t publickey[] = {0x3E,0x5D,0xAC,0x6B,0x35,0x2D,0x67,0xC0,0x9F,0x8C,0x11,0x1B,0x57,0xA6,0x5A,0xC3,0xFF,0xAD,0x08,0xB9,0x0B,0x89,0x71,0x1B,0x72,0xA4,0xA0,0xEF,0x8E,0x84,0xF4,0x7D,0xEF,0xD9,0xCD,0x12,0xA3,0xF9,0x11,0x89,0xEC,0xDF,0xFE,0x6A,0x88,0x08,0xB6,0xB4,0x2C,0x3C,0x36,0xF2,0x24,0x89,0x8E,0xB7,0xB4,0x29,0xD4,0xFB,0x1D,0x1F,0x1F,0xB7};
+  //uint8_t privatekey[] = {0xE1,0x2F,0xB7,0x75,0x65,0xA6,0xC2,0x09,0xB1,0xD9,0xF6,0xC3,0xF6,0x54,0x6C,0xF5,0xAE,0xFE,0x06,0x66,0xD3,0x35,0x75,0x04,0xA7,0xB9,0x8F,0x78,0xBD,0xE3,0xB7,0xEC};
+  
+  
   if (!uECC_make_key(publickey, privatekey, curves[c])) {
       Serial.println("uECC_make_key() failed\n");
       return;
   }
-  */
   
-  Serial.print("public key: ");
+  
+  
+  //Serial.print("public key: ");
   //int pub_en_len = (int) base64_enc_len(pubkey_size);
   //char pub_en[pub_en_len];
   //base64_encode(pub_en, (char*) publickey, pub_en_len);
   //Serial.println(pub_en);
-  vli_print(publickey, pubkey_size);
+  //vli_print(publickey, pubkey_size);
   
-  Serial.print("private key: ");
+  //Serial.print("private key: ");
   //int pri_en_len = (int) base64_enc_len(prikey_size);
   //char pri_en[pri_en_len];
   //base64_encode(pri_en, (char*) privatekey, pri_en_len);
   //Serial.println(pri_en);
-  vli_print(privatekey, prikey_size);
+  //vli_print(privatekey, prikey_size);
 
-  Serial.println("Signing message...");
+  //Serial.println("Signing message...");
+  unsigned long a = millis();
+  Sha256.init();
+  Sha256.print(message);
+  hash = Sha256.result();
   if (!uECC_sign(privatekey,(uint8_t*) hash, hash_len, sig, curves[c])) {
       Serial.println("uECC_sign() failed");
       return;
   }
-  Serial.print("sign: ");
+  unsigned long b = millis();
+  Serial.print(b-a);
+  //totalSign = totalSign + (b-a);
+  //Serial.print("sign: ");
   //int sig_en_len = (int) base64_enc_len(sizeof(sig));
   //char sig_en[sig_en_len];
   //base64_encode(sig_en, (char*) sig, sig_en_len);
   //Serial.println(sig_en);
-  vli_print(sig, pubkey_size);
-
+  //vli_print(sig, pubkey_size);
+  a = millis();
+  Sha256.init();
+  Sha256.print(message);
+  hash = Sha256.result();
   if (!uECC_verify(publickey, (uint8_t*) hash, hash_len, sig, curves[c])) {
       Serial.println("uECC_verify() failed");
       return;
   }
-  Serial.println("Verified!");
+  b = millis();
+  Serial.print(" ");
+  Serial.println(b-a);
+  //totalVerify = totalVerify + (b-a);
+ // Serial.println("Verified!");
+ iteration++;
 }
 
