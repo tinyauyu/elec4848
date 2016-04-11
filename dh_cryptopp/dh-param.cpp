@@ -30,10 +30,16 @@ using CryptoPP::DH;
 #include "secblock.h"
 using CryptoPP::SecByteBlock;
 
+
+#include <sys/time.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 int main(int argc, char** argv)
 {
 	AutoSeededRandomPool rnd;
 	unsigned int bits = 1024;
+	struct timeval stop, start;     // start and stop time
 
 	try
 	{
@@ -49,7 +55,7 @@ int main(int argc, char** argv)
 				throw runtime_error("Invalid size in bits");
 		}
 
-		cout << "Generating prime of size " << bits << " and generator" << endl;
+		//cout << "Generating prime of size " << bits << " and generator" << endl;
 
 		// Safe primes are of the form p = 2q + 1, p and q prime.
 		// These parameters do not state a maximum security level based
@@ -120,22 +126,22 @@ int main(int argc, char** argv)
 
 		size_t count = 0;
 
-		const Integer& p = dh.GetGroupParameters().GetModulus();
-		count = p.BitCount();
-		cout << "P (" << std::dec << count << "): " << std::hex << p << endl;
+		// const Integer& p = dh.GetGroupParameters().GetModulus();
+		// count = p.BitCount();
+		// cout << "P (" << std::dec << count << "): " << std::hex << p << endl;
 		
-		const Integer& q = dh.GetGroupParameters().GetSubgroupOrder();
-		count = q.BitCount();
-		cout << "Q (" << std::dec << count << "): " << std::hex << q << endl;
+		// const Integer& q = dh.GetGroupParameters().GetSubgroupOrder();
+		// count = q.BitCount();
+		// cout << "Q (" << std::dec << count << "): " << std::hex << q << endl;
 
-		const Integer& g = dh.GetGroupParameters().GetGenerator();
-		count = g.BitCount();
-		cout << "G (" << std::dec << count << "): " << std::dec << g << endl;
+		// const Integer& g = dh.GetGroupParameters().GetGenerator();
+		// count = g.BitCount();
+		// cout << "G (" << std::dec << count << "): " << std::dec << g << endl;
 
-		// http://groups.google.com/group/sci.crypt/browse_thread/thread/7dc7eeb04a09f0ce
-		Integer v = ModularExponentiation(g, q, p);
-		if(v != Integer::One())
-			throw runtime_error("Failed to verify order of the subgroup");
+		// // http://groups.google.com/group/sci.crypt/browse_thread/thread/7dc7eeb04a09f0ce
+		// Integer v = ModularExponentiation(g, q, p);
+		// if(v != Integer::One())
+		// 	throw runtime_error("Failed to verify order of the subgroup");
 
 		SecByteBlock priv1(dh.PrivateKeyLength());
 		SecByteBlock pub1(dh.PublicKeyLength());
@@ -146,8 +152,11 @@ int main(int argc, char** argv)
 
 		SecByteBlock sharedA(dh.AgreedValueLength()), sharedB(dh.AgreedValueLength());
 
+		gettimeofday(&start, NULL);
 		if(!dh.Agree(sharedA, priv1, pub2))
 			throw runtime_error("Failed to reach shared secret (1A)");
+		gettimeofday(&stop, NULL);
+
 
 		if(!dh.Agree(sharedB, priv2, pub1))
 			throw runtime_error("Failed to reach shared secret (B)");
@@ -164,6 +173,8 @@ int main(int argc, char** argv)
 
 	    b.Decode(sharedB.BytePtr(), sharedB.SizeInBytes());
 		//cout << "Shared secret (B): " << std::hex << b << endl;
+
+		cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << endl;
 	}
 
 	catch(const CryptoPP::Exception& e)

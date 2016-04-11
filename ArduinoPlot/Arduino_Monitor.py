@@ -59,9 +59,9 @@ class SerialData(object):
             self.ser.close()
 
 if __name__=='__main__':
-    f = open('ecies.txt','w')
+    f = open('idle.txt','w')
     s = SerialData()
-    for i in range(10000):
+    for i in range(600):
         time.sleep(.1)
         #print s.next()
         print i

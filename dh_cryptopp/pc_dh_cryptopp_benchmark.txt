@@ -1,0 +1,6 @@
+dh using cryptopp benchmark [average of 100 encryptions]
+Curve	Time for Secret Generation(us)
+1024	211
+2048	1283
+3072	4352
+7680	18010
