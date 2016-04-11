@@ -16,8 +16,8 @@ ENV=$1
 echo "$ENCRYPTION_ALG using $LIBRARY benchmark [average of $NUM encryptions]" > "$ENCRYPTION_ALG"_benchmarkTemp.txt
 echo "Curve	Sign Time(us)	Verify Time(us)" >> "$ENCRYPTION_ALG"_benchmarkTemp.txt
 
-msg_array=(80 112 128 192 256)
-#msg_array=(1024 1024 1024 1024 1024)
+#msg_array=(80 112 128 192 256)
+msg_array=(1024 1024 1024 1024 1024)
 key_array=(secp160r1 secp224r1 secp256r1 secp384r1 secp521r1)
 
 for (( i=0; i<$TEST; i++))

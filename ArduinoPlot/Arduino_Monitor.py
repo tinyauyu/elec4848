@@ -59,10 +59,11 @@ class SerialData(object):
             self.ser.close()
 
 if __name__=='__main__':
-    f = open('idle.txt','w')
+    f = open('ecies.txt','w')
     s = SerialData()
-    for i in range(600):
+    for i in range(10000):
         time.sleep(.1)
+        #print s.next()
         print i
         f.write(str(s.next())) # python will convert \n to os.linesep
         f.write('\n')
