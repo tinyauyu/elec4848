@@ -81,26 +81,39 @@ void setup() {
   init_curve();
 
 //  iteration = 0;
-  c = 3;
+  c = 0;
+
+  pinMode(7, OUTPUT);
+  digitalWrite(7,LOW);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, HIGH);
+  delay(15000);
+  digitalWrite(13, LOW);
 }
 
 void loop() {
-//  Serial.print(iteration);
-//  Serial.print("->");
+  //Serial.print(iteration);
+  //Serial.print("->");
   //Serial.print(totalTime);
   //Serial.print("->");
-//  if(iteration > 100){
-//    c++;
-//    if(c>4){return;}
-//    iteration = 0;
-//    Serial.print("done curve ");
-//    Serial.println(c);
-//    Serial.print("totalSign = ");
-//    Serial.println(totalSign);
-//    Serial.print("totalVerify = ");
-//    Serial.println(totalVerify);
-//    
-//  }
+  if(iteration > 1){
+    digitalWrite(7,LOW);
+    c++;
+    if(c>4){c=5; digitalWrite(13,HIGH); digitalWrite(7,LOW); return;}
+    iteration = 0;
+    Serial.print("done curve ");
+    Serial.println(c);
+    Serial.print("totalSign = ");
+    Serial.println(totalSign);
+    Serial.print("totalVerify = ");
+    Serial.println(totalVerify);
+    totalSign = 0;
+    totalVerify = 0;
+     delay(500);
+  }
+
+  if(c>4){c=5; digitalWrite(13,HIGH); digitalWrite(7,LOW); return;}
+  
   const int pubkey_size = uECC_curve_public_key_size(curves[c]);
   const int prikey_size = uECC_curve_private_key_size(curves[c]);
   //Serial.print("pub key size = ");
@@ -108,8 +121,8 @@ void loop() {
   uint8_t privatekey[prikey_size];
   uint8_t publickey[pubkey_size];
   
-  char message[] = "This is an apple!";
-  int message_len = 17;
+  char message[] = "Sld48xaGrmMGkX6UJCuSU4Q0j33QPtQt0NUNmPfoMyIEJa2ioVGtohV6o2S1EfNRiv31VTuoDnWS3iyT9LSYvlRyxxjPPnqTd3nl7Gl5JrGdqifh4RXJNx3AJjj8tByj";
+  int message_len = 128;
 
   uint8_t *hash;
   int hash_len = 32;
@@ -150,6 +163,7 @@ void loop() {
   //vli_print(privatekey, prikey_size);
 
   //Serial.println("Signing message...");
+  digitalWrite(7,HIGH); 
   unsigned long a = millis();
   Sha256.init();
   Sha256.print(message);
@@ -159,8 +173,8 @@ void loop() {
       return;
   }
   unsigned long b = millis();
-  Serial.print(b-a);
-  //totalSign = totalSign + (b-a);
+  //Serial.print(b-a);
+  totalSign = totalSign + (b-a);
   //Serial.print("sign: ");
   //int sig_en_len = (int) base64_enc_len(sizeof(sig));
   //char sig_en[sig_en_len];
@@ -175,10 +189,11 @@ void loop() {
       Serial.println("uECC_verify() failed");
       return;
   }
+  digitalWrite(7,LOW); 
   b = millis();
-  Serial.print(" ");
-  Serial.println(b-a);
-  //totalVerify = totalVerify + (b-a);
+  //Serial.print(" ");
+  //Serial.println(b-a);
+  totalVerify = totalVerify + (b-a);
  // Serial.println("Verified!");
  iteration++;
 }

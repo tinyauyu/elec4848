@@ -9,11 +9,11 @@ void setup() {
 
 void loop() {
   val = digitalRead(inPin);
-  //if(val==1){
+  if(val==1){
     current = analogRead(0)*(5.0/1023.0) * 1000;
     Serial.println(current);
     delay(100);    
-//  } else {
-//    Serial.println(-1);
-//  }
+  } else {
+    Serial.println(-1);
+  }
 }

@@ -26,7 +26,7 @@ class SerialData(object):
     def __init__(self, init=50):
         try:
             self.ser = ser = serial.Serial(
-                port='/dev/ttyACM0',
+                port='/dev/ttyACM5',
                 baudrate=9600,
                 bytesize=serial.EIGHTBITS,
                 parity=serial.PARITY_NONE,
@@ -59,12 +59,12 @@ class SerialData(object):
             self.ser.close()
 
 if __name__=='__main__':
-    f = open('idle.txt','w')
+    f = open('arduino_ecdsa.txt','w')
     s = SerialData()
-    for i in range(600):
+    for i in range(1000000):
         time.sleep(.1)
-        #print s.next()
-        print i
-        f.write(str(s.next())) # python will convert \n to os.linesep
+        in_num = s.next()
+        print in_num
+        f.write(str(in_num)) # python will convert \n to os.linesep
         f.write('\n')
     f.close() # you can omit in most cases as the destructor will call it
