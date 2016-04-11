@@ -1,0 +1,7 @@
+rsasign using cryptopp benchmark [average of 100 encryptions]
+Key Length	Sign Time(us)	Verify Time(us)
+1024	1527	75
+2048	6432	408
+3072	27225	560
+7680	123573	930
+15360	606837	1922
