@@ -34,6 +34,7 @@ do
 	msg="$(openssl rand -hex $l)"
 	#echo $msg
 	#echo -n "$msg_length char	"
+	sudo ../arduino_powerTest/on.sh 21
 	for (( c=1; c<=$NUM; c++))
 	do
 		lastResult="$($PRG_CALL $key $msg)"
@@ -56,6 +57,7 @@ do
 		
 		echo -n .
 	done
+	sudo ../arduino_powerTest/off.sh 21
 	echo
 
 	averageEncryption=$((totalEncryption / NUM))

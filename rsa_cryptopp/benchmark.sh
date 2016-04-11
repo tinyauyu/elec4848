@@ -34,6 +34,7 @@ do
 	msg="$(openssl rand -hex $l)"
 	#echo $msg
 	#echo -n "$msg_length char	"
+	sudo ./on.sh 21
 	for (( c=1; c<=$NUM; c++))
 	do
 		lastResult="$($PRG_CALL $key $msg)"
@@ -56,6 +57,8 @@ do
 		
 		echo -n .
 	done
+	sudo ./off.sh 21
+
 	echo
 
 	averageEncryption=$((totalEncryption / NUM))
