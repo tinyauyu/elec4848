@@ -26,7 +26,7 @@ class SerialData(object):
     def __init__(self, init=50):
         try:
             self.ser = ser = serial.Serial(
-                port='/dev/ttyACM5',
+                port='/dev/ttyACM6',
                 baudrate=9600,
                 bytesize=serial.EIGHTBITS,
                 parity=serial.PARITY_NONE,
@@ -59,9 +59,9 @@ class SerialData(object):
             self.ser.close()
 
 if __name__=='__main__':
-    f = open('arduino_ecdsa.txt','w')
+    f = open('idle.txt','w')
     s = SerialData()
-    for i in range(1000000):
+    for i in range(600):
         time.sleep(.1)
         in_num = s.next()
         print in_num

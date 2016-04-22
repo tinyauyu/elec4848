@@ -40,9 +40,16 @@ using namespace CryptoPP::ASN1;
 #include "cryptopp/integer.h"
 using CryptoPP::Integer;
 
+#include <cryptopp/files.h>
+using CryptoPP::FileSink;
+using CryptoPP::FileSource;
+
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <sstream>
+using std::stringstream;
 
 CryptoPP::OID curve(string c){
     int curveNum = 11;
@@ -87,6 +94,7 @@ int main( int argc, char** arg ) {
     ByteQueue privateKey, publicKey;
     string curve_name, message;
     struct timeval stop, start;     // start and stop time
+    stringstream priKeyFileName, pubKeyFileName;
 
 
     // check arguments
@@ -105,11 +113,17 @@ int main( int argc, char** arg ) {
     ECDSA<ECP, SHA256>::PrivateKey privKey;
     privKey.Initialize( prng, curve(curve_name) );
     privKey.Save( privateKey );
+    priKeyFileName << "ecdsa-private-" << curve_name << ".key";
+    FileSink pri( priKeyFileName.str().c_str() );
+    privKey.Save( pri );
 
     // Create public key
     ECDSA<ECP, SHA256>::PublicKey pubKey;
     privKey.MakePublicKey( pubKey );
     pubKey.Save( publicKey );
+    pubKeyFileName << "ecdsa-public-" << curve_name << ".key";
+    FileSink pub( pubKeyFileName.str().c_str() );
+    pubKey.Save( pub );
 
     //////////////////////////////////////////////////////    
 
