@@ -410,7 +410,7 @@ int main(void)
      /* For the exercise, uncomment this part */
      /* printf("Finished\n"); */
       gettimeofday(&stop, NULL);
-      cout << "Time taken: " << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << " ";
+      cout << "Time taken: " << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << "us" << endl;
     }
 
     return 0;
