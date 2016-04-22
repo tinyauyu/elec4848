@@ -94,7 +94,7 @@ int main( int argc, char** arg ) {
     ByteQueue privateKey, publicKey;
     string curve_name, message;
     struct timeval stop, start;     // start and stop time
-    stringstream priKeyFileName, pubKeyFileName;
+    stringstream priKeyFileName, pubKeyFileName;    
 
 
     // check arguments
@@ -127,35 +127,35 @@ int main( int argc, char** arg ) {
 
     //////////////////////////////////////////////////////    
 
-    // // Load private key (in ByteQueue, PKCS#8 format)
-    // ECDSA<ECP, SHA256>::Signer signer( privateKey );
+    // Load private key (in ByteQueue, PKCS#8 format)
+    ECDSA<ECP, SHA256>::Signer signer( privateKey );
 
-    // // Determine maximum size, allocate a string with that size
-    // size_t siglen = signer.MaxSignatureLength();
-    // string signature(siglen, 0x00);
+    // Determine maximum size, allocate a string with that size
+    size_t siglen = signer.MaxSignatureLength();
+    string signature(siglen, 0x00);
 
-    // // Sign, and trim signature to actual size
-    // gettimeofday(&start, NULL);
-    // siglen = signer.SignMessage( prng, (const byte*)message.data(), message.size(), (byte*)signature.data() );
-    // signature.resize(siglen);
-    // gettimeofday(&stop, NULL);
+    // Sign, and trim signature to actual size
+    gettimeofday(&start, NULL);
+    siglen = signer.SignMessage( prng, (const byte*)message.data(), message.size(), (byte*)signature.data() );
+    signature.resize(siglen);
+    gettimeofday(&stop, NULL);
 
-    // cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << " ";
+    cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << " ";
 
     // //////////////////////////////////////////////////////    
 
-    // // Load public key (in ByteQueue, X509 format)
-    // cout << "Length: " << publicKey.MaxRetrievable() << endl;
-    // ECDSA<ECP, SHA256>::Verifier verifier( publicKey );
-    // gettimeofday(&start, NULL);
-    // bool result = verifier.VerifyMessage( (const byte*)message.data(), message.size(), (const byte*)signature.data(), signature.size() );
-    // gettimeofday(&stop, NULL);
+    // Load public key (in ByteQueue, X509 format)
+    cout << "Length: " << publicKey.MaxRetrievable() << endl;
+    ECDSA<ECP, SHA256>::Verifier verifier( publicKey );
+    gettimeofday(&start, NULL);
+    bool result = verifier.VerifyMessage( (const byte*)message.data(), message.size(), (const byte*)signature.data(), signature.size() );
+    gettimeofday(&stop, NULL);
 
-    // if(result){
-    //     cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << endl;
-    //     //cout << "signature: " << std::hex << signature << endl;
-    // }else
-    //     cerr << "Failed to verify signature on message" << endl;
+    if(result){
+        cout << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << endl;
+        //cout << "signature: " << std::hex << signature << endl;
+    }else
+        cerr << "Failed to verify signature on message" << endl;
 
     return 0;
 }
