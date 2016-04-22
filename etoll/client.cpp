@@ -128,6 +128,7 @@ int main(int argc, char *argv[])
     char receiptReceived[MAXDATASIZE];
     struct hostent *he;
     struct sockaddr_in peer_addr;   //server's address information 
+    struct timeval stop, start;     // start and stop time
 
     if (argc != 4) {
         fprintf(stderr,"usage: client hostname curveName message\n");
@@ -165,9 +166,10 @@ int main(int argc, char *argv[])
         perror("connect");
         exit(1);
     }
+    gettimeofday(&start, NULL);
     
     /* For the exercise, you can comment out (or remove) this part */
-    printf("Connection established.\n\n");
+    printf("Connection established.\n");
     
     /* Keep this one for requesting input from user */
     cout << "Using curve: " << curveName << endl;
@@ -225,6 +227,7 @@ int main(int argc, char *argv[])
         exit(-1);
     }
 
+    cout << "Verifying Public Key... ";
     ECDSA<ECP, SHA256>::Verifier verifier( ecdsa_publicKey );
     result = verifier.VerifyMessage( (const byte*)pubkey_str.data(), pubkey_str.size(), (const byte*)signature_str.data(), signature_str.size() );
     if ( !result ) {
@@ -235,7 +238,7 @@ int main(int argc, char *argv[])
     }
 
     /* Encrypt Transaction Message */
-    cout << "Encrypting Message: " << msg << endl;
+    cout << "Transaction Message: " << msg << endl;
     string ciphertext, c_encoded;
     StringSource ss1 (msg, true, new PK_EncryptorFilter(prng, e0, new StringSink(ciphertext) ) );
     
@@ -255,9 +258,11 @@ int main(int argc, char *argv[])
     string receipt = base64_decode(receipt_encoded);
 
 
-
     /* close the socket */
     close(sockfd);
+
+    gettimeofday(&stop, NULL);
+    cout << "Time taken: " << (stop.tv_usec - start.tv_usec) + (stop.tv_sec - start.tv_sec)*1000000 << " ";
 
     return 0;
 }
